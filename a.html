@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotating Numbers as Clock Hands</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(45deg, #ff6a00, #ee0979); /* Beautiful gradient background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite; /* Animated gradient */
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Styles for the rotating numbers */
+        .number {
+            position: absolute;
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            transform-origin: 50% 50%;
+            transition: transform 0.1s ease;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Rotating numbers for hour, minute, and second -->
+    <div class="number" id="hourNumber"></div>
+    <div class="number" id="minuteNumber"></div>
+    <div class="number" id="secondNumber"></div>
+
+    <script>
+        function setClock() {
+            const hourNumber = document.getElementById('hourNumber');
+            const minuteNumber = document.getElementById('minuteNumber');
+            const secondNumber = document.getElementById('secondNumber');
+            
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            // Calculate rotation angles based on current time
+            const hourDegree = (hours % 12) * 30 + (minutes / 60) * 30;  // Rotate by 30 degrees per hour and minute fraction
+            const minuteDegree = (minutes) * 6 + (seconds / 60) * 6;   // Rotate by 6 degrees per minute and second fraction
+            const secondDegree = (seconds) * 6;   // Rotate by 6 degrees per second
+
+            // Set the numbers for hour, minute, and second based on actual time
+            hourNumber.textContent = String(hours).padStart(2, '0');  // Display current hour (e.g., "12")
+            minuteNumber.textContent = String(minutes).padStart(2, '0'); // Display current minute (e.g., "30")
+            secondNumber.textContent = String(seconds).padStart(2, '0'); // Display current second (e.g., "45")
+
+            // Repeat the numbers 5-6 times around the clock
+            const repeatCount = 6; // Repeat the numbers 6 times
+            let hourText = '';
+            let minuteText = '';
+            let secondText = '';
+            
+            for (let i = 0; i < repeatCount; i++) {
+                hourText += String(hours).padStart(2, '0') + ' ';
+                minuteText += String(minutes).padStart(2, '0') + ' ';
+                secondText += String(seconds).padStart(2, '0') + ' ';
+            }
+            
+            // Update the number content for the hands
+            hourNumber.textContent = hourText.trim();
+            minuteNumber.textContent = minuteText.trim();
+            secondNumber.textContent = secondText.trim();
+
+            // Set the rotation for the hour, minute, and second numbers
+            const radius = 120;  // Radius to place numbers around the center
+
+            // Position the hour number based on current time
+            hourNumber.style.transform = `translate(-50%, -50%) rotate(${hourDegree}deg) translateX(${radius}px)`;
+
+            // Position the minute number based on current time
+            minuteNumber.style.transform = `translate(-50%, -50%) rotate(${minuteDegree}deg) translateX(${radius}px)`;
+
+            // Position the second number based on current time
+            secondNumber.style.transform = `translate(-50%, -50%) rotate(${secondDegree}deg) translateX(${radius}px)`;
+        }
+
+        // Update the clock every second
+        setInterval(setClock, 1000);
+
+        // Set the initial time
+        setClock();
+    </script>
+
+</body>
+</html>
